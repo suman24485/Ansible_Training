@@ -1,0 +1,75 @@
+Ansible Installation
+
+#yum install epel-release
+#yum update repolist
+#yum update (if any)
+
+#yum install ansible
+
+Ansible Configuration File
+/etc/ansible/ansible.cfg
+#cd /etc/ansible
+
+#ls 
+hosts 
+ansible.cfg 
+roles
+
+#vi ansible.cfg
+uncomment the following
+inventory, remote_tmp, pattern=*, forks=5, poll_interval=15, sudo_user=root, 
+transport=smart, module_lang=C, gathering = implicit, sudo_exe = sudo, timeout = 10,
+log_path = /var/log/ansible.log (only for debug sessions)
+ansible_managed = Ansible managed: 
+plugin path directories, accelerate, 
+
+#cat /etc/selinux/config
+SELINUX = enforcing to disabled and reboot the system
+
+Ansible Python Dependencies
+-jinja2
+-paramiko
+2.4 is min version 2.5 is perfect
+
+The HOSTS file
+#cd /etc/ansible
+#vi hosts
+[local]
+localhost
+
+[apacheweb]
+<IPAddress>
+
+[appserver]
+<IPAddress>
+
+Overriding the Default HOSTS file
+We can change the host file in the config file
+#ansible all --list-hosts
+#cat /etc/ansible/hosts
+#ansible apacheweb -m ping 
+#ansible tcox5 -i <path to hosts file> -m ping (overriding the default HOSTS inventory)
+
+Overriding the Default system ansible.cfg file
+
+#mkdir tests
+#cd tests
+#ansible all --list-hosts
+vi hosts
+[test]
+<IPAddress>
+
+[apacheweb]
+www.google.com.2
+
+#ansible apacheweb -i hosts -m ping
+#cp /etc/ansible/ansible.cfg .
+#vi ansible.cfg
+#export ANSIBLE_CONFIG=<new path to ansible.cfg>
+
+Overriding the default roles path
+roles_path in ansible.cfg
+comeback to this after the Roles videos
+
+
+
