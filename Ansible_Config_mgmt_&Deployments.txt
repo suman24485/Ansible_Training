@@ -10,18 +10,18 @@ Ansible Configuration File
 /etc/ansible/ansible.cfg
 #cd /etc/ansible
 
-#ls 
-hosts 
-ansible.cfg 
+#ls
+hosts
+ansible.cfg
 roles
 
 #vi ansible.cfg
 uncomment the following
-inventory, remote_tmp, pattern=*, forks=5, poll_interval=15, sudo_user=root, 
+inventory, remote_tmp, pattern=*, forks=5, poll_interval=15, sudo_user=root,
 transport=smart, module_lang=C, gathering = implicit, sudo_exe = sudo, timeout = 10,
 log_path = /var/log/ansible.log (only for debug sessions)
-ansible_managed = Ansible managed: 
-plugin path directories, accelerate, 
+ansible_managed = Ansible managed:
+plugin path directories, accelerate,
 
 #cat /etc/selinux/config
 SELINUX = enforcing to disabled and reboot the system
@@ -47,7 +47,7 @@ Overriding the Default HOSTS file
 We can change the host file in the config file
 #ansible all --list-hosts
 #cat /etc/ansible/hosts
-#ansible apacheweb -m ping 
+#ansible apacheweb -m ping
 #ansible tcox5 -i <path to hosts file> -m ping (overriding the default HOSTS inventory)
 
 Overriding the Default system ansible.cfg file
@@ -71,5 +71,13 @@ Overriding the default roles path
 roles_path in ansible.cfg
 comeback to this after the Roles videos
 
+Configuring Ansible account
+#visudo
 
+Ansible Command line
+#ansible all --list-hosts
+#ansible apacheweb --list-hosts
+#ansible all -m ping
+#ansible apacheweb -s -m shell -a 'yum list installed | gerp python'
 
+System Facts
