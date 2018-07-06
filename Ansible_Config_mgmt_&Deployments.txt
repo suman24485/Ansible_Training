@@ -81,3 +81,28 @@ Ansible Command line
 #ansible apacheweb -s -m shell -a 'yum list installed | gerp python'
 
 System Facts
+#ansible local -m setup | more
+#ansible local -m setup --tree /tmp/facts
+#ansible local -m setup -a 'filter=*ipv4*'
+
+System Facts - Common values for playbooks
+ansible_interfaces
+ansible_distribution
+ansible_kernel
+ansible_memtotal_mb
+ansible_proc*
+ansible_virtulaization_*
+
+First Playbook
+#ansible local -s -m shell -a 'yum install lynx'
+#ansible apacheweb -s -m yum -a 'pkg=lynx state=installed update_cache=true'
+#mkdir playbooks
+#cd playbooks
+#vi appserver.yaml
+--- # installing lynx on appserver
+- hosts: appserver
+  tasks:
+  - name: install lynx on app appserver
+    yum: pkg=lynx state=installed update_cache=true
+:wq!
+#ansible-playbook -s appserver.yaml
