@@ -106,3 +106,467 @@ First Playbook
     yum: pkg=lynx state=installed update_cache=true
 :wq!
 #ansible-playbook -s appserver.yaml
+
+Variables: Inclusion types
+#vi appserver.yaml
+- hosts: appserver
+  vars:
+    <variablename>: <value>
+    control_server: localhost
+    web_root: /var/www/html/
+  tasks:
+  - name: install lynx on app appserver
+    yum: pkg=lynx state=installed update_cache=true
+:wq!
+#ansible-playbook -s appserver.yaml
+#vi appserver.yaml
+- hosts: appserver
+  vars_files:
+  - vars.yml #contains all the variables that are required by this yaml
+  tasks:
+  - name: install lynx on app appserver
+    yum: pkg=lynx state=installed update_cache=true
+:wq!
+#vi vars.yml
+control_server: localhost
+web_root: /var/www/html/
+:wq!
+#ansible-playbook -s appserver.yaml
+
+Target Section
+#vim myfirstplaybook.yaml
+--- #my first playbook
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh #default connection type is ssh - no need to mention
+  gather_facts: no
+:wq!
+#ansible-playbook myfirstplaybook.yaml
+
+Variable Section
+#ansible all --list-hosts
+#mkdir conf
+#cd conf
+#vim copyright.yaml
+--- # list of values
+message: Copyright 2015 by Linux Academy
+:wq!
+#vim webdefaults.yaml
+---
+apache_version: 2.6
+apache_mod_req: ssl
+:wq!
+#vim myfirstplaybook/yaml
+--- #my first playbook
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh #default connection type is ssh - no need to mention
+  gather_facts: no
+  vars:
+    playbook_version: 0.1b
+  vars_files:
+    - conf/copyright.yaml
+    - conf/webdefaults.yaml
+  vars_prompt:
+    - name: web_domain
+      prompt: Web Domain
+:wq!
+#ansible-playbook myfirstplaybook.yaml
+
+Task Section
+#ansible-doc | wc -l
+list all installed modules
+#vi myfirstplaybook.yaml
+--- #my first playbook
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh #default connection type is ssh - no need to mention
+  gather_facts: no
+  vars:
+    playbook_version: 0.1b
+  vars_files:
+    - conf/copyright.yaml
+    - conf/webdefaults.yaml
+  vars_prompt:
+    - name: web_domain
+      prompt: Web Domain
+  tasks:
+    - name: Install Lynx Web Browser
+      action: yum name=lynx state=installed
+    - name: Check for telnet client
+      action: yum name=telnet state=absent
+:wq!
+#ansible-playbook myfirstplaybook.yaml
+
+Handler Section
+#vim myfirstplaybook.yaml
+--- #my first playbook
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh #default connection type is ssh - no need to mention
+  gather_facts: no
+  vars:
+    playbook_version: 0.1b
+  vars_files:
+    - conf/copyright.yaml
+    - conf/webdefaults.yaml
+  vars_prompt:
+    - name: web_domain
+      prompt: Web Domain
+  tasks:
+    - name: Install Apache webserver
+      action: yum name=httpd state=installed
+      notify: Restart HTTPD
+  handlers:
+    - name: Restart HTTPD
+      action: service name=httpd state=restarted
+:wq!
+#ansible-playbook myfirstplaybook.yaml
+
+Outlining your playbook
+  layout playbooks
+  create a basic playbook outline in a text
+#mkdir outline
+#cd outline
+#vim webserver.text
+#line out indiviudal tasks we need playbook to perfrom
+-webservers
+-test user
+-sudo rights
+
+-date/time stamp for when the playbook start
+-install web server
+-start web server
+
+-verify that the web service is running
+
+-install client software
+ - telnet
+ - Lynx
+
+-log all the packages install o nthe System
+
+-date/time stamp when playbook ends
+:wq!
+
+Create a playbook from outline
+#cd outline
+#cp webserver.text webserver.yaml
+#vim webserver.yaml
+--- # outline to playbook translation
+-webservers
+to
+- hosts: apacheweb
+-test user
+to
+  user: ansible
+-sudo rights
+to
+  sudo: yes
+  gather_facts: no
+
+-date/time stamp for when the playbook start
+to
+  tasks:
+  - name: date/time stamp for when the playbook start
+    raw: /usr/bin/date > /home/ansible/playbook_start.log
+-install web server
+to
+  - name: Installing apache web server
+    yum: pkg=httpd state=latest
+-start web server
+to
+  - name: Start the web service
+    service: name=httpd state=restarted
+
+-verify that the web service is running
+to
+  - name: verify the web service status
+    command: systemctl status httpd
+    register: result
+  - debug var=result
+
+-install client software
+ - telnet
+ - Lynx
+to
+   - name: install client software = telnet
+     yum: pkg=telnet state=latest
+   - name: install client software - Lynx
+     yum: pkg=lynx state=latest
+
+-log all the packages install o nthe System
+to
+    - name: log all the packages installed
+      raw: yum list installed > /home/ansible/installed.log
+
+-date/time stamp when playbook ends
+to
+    - name: date/timeout when playbook ends
+      raw: /usr/bin/date > /home/ansible/playbook_end.log
+:wq!
+#ansible-playbook webserver.yaml --check # -- check option checks the format of the playbook yaml
+#ansible-playbook webserver.yaml
+
+Optimizing playbook
+#cd Playbooks
+#cd Outline
+#cp webserver.yml to webserver.orig
+#vi webserver.yml
+--- # outline to playbook translation
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  gather_facts: no
+  tasks:
+  - name: date/time stamp for when the playbook start
+    command: /usr/bin/date
+    register: timestamp_start
+    #remove raw: /usr/bin/date > /home/ansible/playbook_start.log
+  - debug: var=timestamp_start
+  - name: Installing apache web server
+    yum: pkg=httpd state=latest
+    notify: Start HTTPD
+
+  - name: verify the web service status
+    command: systemctl status httpd
+    register: result
+  - debug var=result
+  - name: install client software = telnet
+    yum: pkg=telnet state=latest
+  - name: install client software - Lynx
+    yum: pkg=lynx state=latest
+  - name: log all the packages installed
+    command: yum list installed
+    register: installed_result
+  - debug var=installed_result
+    #remove raw: yum list installed > /home/ansible/installed.log
+  - name: date/timeout when playbook ends
+    command: /usr/bin/date
+    register: timestamp_end
+  - debug var=timestamp_end
+    #remove "raw: /usr/bin/date > /home/ansible/playbook_end.log"
+
+  handlers:
+  - name: Start HTTPD
+    service: name=httpd state=restarted
+:wq!
+#ansible-playbook webserver.yaml --check
+#ansible-playbook webserver.yaml
+
+Taking our playbook for a dry run
+#cd playbooks
+#cat myfirstplaybook.yaml
+#ansible-playbook myfirstplaybook.yaml --check (possible output of the actual command run)
+
+Asynchronous Polling
+for running operations in parallel
+
+Simple Variable substitution
+
+Lookups
+its a built-in function
+Runs locally
+#vim lookup.yaml
+--- # LOOKUP Playbook example
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - debug: msg="Lookup the Superhero for Bruce Wayne {{ lookup('csvfile','Wayne file=lookup.csv delimiter=, default=NOMATCH')}}"
+    - debug: msg="{{ lookup('env','HOME')}}" is hte value listed"
+:wq!
+
+RunOnce
+
+LocalActions
+#vim localplaybook.yaml
+--- # Local action playbooks
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - name: Install Client telnet
+      yum: pkg=telnet state=latest
+:wq!
+#ansible-playbook local.yaml
+
+Loops
+#vim loops.yaml
+--- # example for loops
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Add a list of users
+      user: name={{ item }} state=present
+      with_items:
+        - user1
+        - user2
+        - user3
+
+Conditionals
+#vim condition.yaml
+--- # WHEN playbook example
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh
+  vars:
+    playbook_type: conditional example
+  vars_files:
+    - conf/cpyright.yaml
+    - conf/webdefaults.yaml
+  tasks:
+    - name: Install apache appropriate to distribution type(Debian/Ubuntu)
+      command: apt-get -y install apache2
+      when: ansible_os_family=="Debian"
+    - name: Install apache appropriate to distribution type(Redhat/CentOS)
+      command: yum install apache2
+      when: ansible_os_family=="RedHat"
+   :wq!
+   #ansible apacheweb -m setup -a 'filter=ansible_os_family'
+   #ansible-playbook condition.yaml
+
+Until
+#vim until.yaml
+--- # Until example
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Installing apache web control_server
+      yum: pkg=httpd state=latest
+    - name: Verify service status
+      shell: systemctl status httpd
+      register: result
+      until: result.stdout.find("active (running)") != -1
+      retries: 5
+      delay: 5
+    - debug: var=result
+:wq!
+
+Notify(Handlers)
+#vim myfirstplaybook.yaml
+  tasks:
+     - name: Isntall apache web control_server
+       action: yum name=httpd state=installed
+       notify: Restart HTTPD
+  handlers:
+     - name: Restart HTTPD
+       action: service name=httpd state=restarted
+:wq!
+
+Vault to create secure yaml files
+#vim accunts.yaml
+---
+git_user: gituser
+gitpwd: gitpwd
+admin_user: admin
+admin_pwd: password
+ :wq!
+#ansible-vault create secure.yaml
+#ansible-vault edit secure.yaml
+#ansible-vault rekey secure.yaml
+#ansible-vault decrypt secure.yaml
+#ansible-vault encrypt accunts.yaml secure.yaml
+#cat *yaml
+#ansible-playbook *.yml --ask-vault-pass
+#ansible-playbook *.yml --vault-password-file somefile.text
+
+Prompt - Interactive playbook
+#vim prompt.yaml
+--- # prmt for user package example
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  vars:
+    playbook_verison: 0.01b
+  vars_prompt:
+    - name: pkgtoinstall
+      prompt: Install vch package?
+      default: telnet
+      private: no
+    tasks:
+      - name: Install the indicated packages
+        yum: pkg={{pkgtoinstall}} state=latest
+:wq!
+
+Basic Include statements
+developing a play
+#mkdir plays
+#cd plays
+#vim pakcages.yaml
+- name: Install the telnet Client
+  yum: pkg=telnet state=latest
+- name: Install the lynx Client
+  yum: pkg=lynx state=latest
+:wq!
+#cd playbooks
+#vim include.yaml
+---
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - include: plays/packages.yaml
+    - name: verify telnet package installed
+      raw: yum list installed | grep telnet > /home/ansible/list.log
+:wq!
+
+Tags
+#vim tag.yaml
+---
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Install telnet and lynx packages
+      yum: pkg={{ item }} state=latest
+      with_items:
+        - telnet
+        - Lynx
+      tags:
+        - packages
+    - name: verify telnet installation
+      raw: yum list installed | grep telnet > /home/ansible/list.log
+      tags:
+        - verification
+:wq!
+
+#ansible-playbook tag.yaml --tags "packages"
+#ansible-playbook tag.yaml --tags "verification"
+#ansible-playbook tag.yaml --skip-tags "packages"
+
+NOTE : "always" tag to run the task irrespective of mentioned Tags
+
+Basic Error Handling
+#vim failures.yaml
+--- # ERROR HANDLING example
+- hosts: apacheweb
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Execute a command that fail
+      command: /bin/false
+      ignore_errors: yes/no
+    - name: Install telnet
+      yum: pkg=telnet state=latest
+:wq!
