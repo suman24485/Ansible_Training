@@ -570,3 +570,76 @@ Basic Error Handling
     - name: Install telnet
       yum: pkg=telnet state=latest
 :wq!
+
+Includes - Breaking your playbook into discrete plays
+#ansible all --list-hosts
+#cat /etc/ansible/hosts
+#mkdir Include
+#cd Include
+create a couple of directories
+#mkdir -p packages commands variables
+#mkdir handler
+#cd ackages
+#vi packages.yaml
+- name: Install the apache web server
+  yum: pkg=httpd state=latest
+- name: Install lynx
+  yum: pkg=lynx state=latest
+:wq!
+
+#cd variables
+#vi variables.yaml
+- version: 0.1.b
+:wq!
+#cd commands
+#vi commands.yaml
+- name: Make sure lynx is installed and log it
+  raw: yum list installed | grep lynx > /home/ansible/log
+:wq!
+#cd ../handler
+#vi handler.yaml
+- name: restart HTTPD
+  service: name=httpd state=restarted
+:wq!
+#cd ../
+#vi webstuff.yaml
+
+Starting at Task or Stepping through all tasks
+ansible-playbook startat.yaml --start-at-task="Install Lynx"
+ansible-playbook startat.yaml --step
+
+Passing variables into playbooks at the cmd line
+#vim fromcmdline
+--- # EXAMPLE
+- hosts: '{{ hosts }}'
+  user: '{{ user }}'
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+  - name: Install software client
+    yum: pkg={{ pkg }} state=latest
+  :wq!
+#ansible-plaoybook fromcmdline.yaml --extra-vars " hosts=apacheweb user=test pkg=telnet"
+
+Using Jinja2 templates
+jinja 2 is python extension for ansible
+#vi test.yml
+---
+- hosts: apacheweb:debian
+  connection: ssh
+  user: test
+  sudo: yes
+  gather_facts: yes
+  vars:
+    userName: test
+    userPassword: pwd123
+    connectionType: sftp
+  tasks:
+  - name: Install th config file cusotmized for the system
+    template: src=test.conf.j2 dest=/home/ansible/test.conf owner=ansible group=ansible mode=750
+:wq!
+
+LocalAction
+
+DelegateTo
