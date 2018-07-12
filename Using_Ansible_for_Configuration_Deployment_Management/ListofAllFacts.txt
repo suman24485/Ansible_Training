@@ -1,0 +1,24 @@
+https://stackoverflow.com/questions/18839509/where-can-i-get-a-list-of-ansible-pre-defined-variables
+
+To get the dictionary of all of the facts that are available for that particular host.
+ansible -m setup hostname
+Only gets the facts gathered by the setup module.
+Gilles Cornu posted a template trick to list all variables for a specific host.
+Template (later called dump_variables):
+HOSTVARS (ANSIBLE GATHERED, group_vars, host_vars) :
+{{ hostvars[inventory_hostname] | to_yaml }}
+PLAYBOOK VARS:
+{{ vars | to_yaml }}
+
+Playbook to use it:
+- hosts: all
+  tasks:
+  - template:
+      src: templates/dump_variables
+      dest: /tmp/ansible_variables
+  - fetch:
+      src: /tmp/ansible_variables
+      dest: "{{inventory_hostname}}_ansible_variables"
+After that you have a dump of all variables on every host, and a copy of each text dump file on your local workstation in your tmp folder. If you don't want local copies, you can remove the fetch statement.
+
+This includes gathered facts, host variables and group variables. Therefore you see ansible default variables like group_names, inventory_hostname, ansible_ssh_host and so on.

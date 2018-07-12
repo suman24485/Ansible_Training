@@ -1,0 +1,18 @@
+The "Setup" Module
+  to return facts about remote systems in json format
+  filter required facts
+  less data(facts)for windows machines
+
+Console
+ansible apacheweb -m setup -a "filter=ansible_*"
+ansible apacheweb -m setup -a "filter=ansible_architecture"
+ansible apacheweb -m setup -a "filter=ansible_dist*"
+ansible apacheweb -m setup | grep distribution #but it returns just the line that matches the pattern
+ansible apacheweb -m setup -a "filter=ansible_distribution_version"
+ansible apacheweb -m setup -a "filter=ansible_domain"
+ansible apacheweb -m setup -a "filter=ansible_fqdn" #fully qualified domain name
+ansible apacheweb -m setup -a "filter=ansible_interfaces"
+ansible apacheweb -m setup -a "filter=ansible_kernel"
+ansible apacheweb -m setup -a "filter=ansible_memtotal_mb"
+ansible apacheweb -m setup -a "filter=ansible_proc*"
+ansible apacheweb -m setup -a "filter=ansible_virt*"
