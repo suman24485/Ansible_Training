@@ -3,6 +3,12 @@ The "Setup" Module
   filter required facts
   less data(facts)for windows machines
 
+Parameters
+fact_path       /etc/ansible/facts.d
+filter          *
+gather_subset   all
+gather_timeout  10
+
 Console
 ansible apacheweb -m setup -a "filter=ansible_*"
 ansible apacheweb -m setup -a "filter=ansible_architecture"
