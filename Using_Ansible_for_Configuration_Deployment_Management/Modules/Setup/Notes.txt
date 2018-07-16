@@ -10,6 +10,8 @@ gather_subset   all
 gather_timeout  10
 
 Console
+cat /etc/ansible/hosts
+ansible all --list-hosts
 ansible apacheweb -m setup -a "filter=ansible_*"
 ansible apacheweb -m setup -a "filter=ansible_architecture"
 ansible apacheweb -m setup -a "filter=ansible_dist*"
