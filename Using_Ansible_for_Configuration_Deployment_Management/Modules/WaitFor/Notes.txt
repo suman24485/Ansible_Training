@@ -1,0 +1,23 @@
+WaitFor Module
+
+https://docs.ansible.com/ansible/latest/modules/wait_for_module.html#wait-for-module
+
+https://docs.ansible.com/ansible/latest/modules/wait_for_connection_module.html#wait-for-connection-module
+
+#vi waitfor.yaml
+--- # waitfor module
+- hosts: sumanrh
+  sudo: yes
+  gather_facts: no
+  tasks:
+    - name: Install httpd
+      action: yum name=tomcat state=installed
+    - name: Waiting for port 8080 to Listen
+      wait_for:
+        port: 8080
+        state: started
+    - name: Verifying lnx installation
+      action: yum name=lynx state=present
+:wq!
+
+execution waits till the server is listening on 8080

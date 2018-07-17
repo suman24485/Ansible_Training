@@ -1,0 +1,23 @@
+Service Module
+https://docs.ansible.com/ansible/latest/modules/service_module.html#service-module
+https://docs.ansible.com/ansible/latest/modules/service_facts_module.html#service-facts-module
+
+service module doesn't require special mention of the target environment
+interacts with sysvinit sysd systems only if it knows the system it is running and this can be achieved only by gathering facts
+
+#cd playbooks
+#vi service.yaml
+--- # service module example
+- hosts: redhat
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+   - name: Install web server
+     action: yum name=httpd state=installed
+   - name: Start the web server
+     service: name=httpd state=started
+   - name: Enable httpd after reboot
+     service: name=httpd enabled=yes
+:wq!

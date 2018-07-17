@@ -1,0 +1,20 @@
+Debug Module
+https://docs.ansible.com/ansible/latest/modules/debug_module.html#debug-module
+
+#vi debug.yaml
+--- # Debug Module Example
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+  - name: Install the web server
+    yum: name=httpd state=installed
+  - debug: msg="Equivalent of sudo yum install httpd"
+  - name: How long the system has been up
+    shell: /usr/bin/uptime
+    register: result
+  - debug: var=result
+
+    

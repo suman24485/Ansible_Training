@@ -1,0 +1,15 @@
+Command Module
+https://docs.ansible.com/ansible/latest/modules/command_module.html#command-module
+
+#vi command.yaml
+--- #Command Module example
+- hosts: sumanrh
+  sudo: yes
+  user: ansible
+  connection: ssh
+  gather_facts: no
+  tasks:
+  - name: Check for python packages
+    command: /home/ansible/testing/test.sh
+    args:
+      chdir: /home/ansible/testing

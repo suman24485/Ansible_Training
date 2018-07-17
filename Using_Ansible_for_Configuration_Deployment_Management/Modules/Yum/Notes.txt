@@ -1,0 +1,16 @@
+Yum Module
+https://docs.ansible.com/ansible/latest/modules/yum_module.html#yum-module
+https://docs.ansible.com/ansible/latest/modules/yum_repository_module.html#yum-repository-module
+
+#cd playbooks
+#vi yum.yaml
+--- # YUM Example
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+  - name: Installing httpd
+    action: yum pkg=httpd state=installed(other options - absent, latest)
+:wq!

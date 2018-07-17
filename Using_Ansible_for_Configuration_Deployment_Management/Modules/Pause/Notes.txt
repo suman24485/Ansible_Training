@@ -1,0 +1,25 @@
+Pause Module
+https://docs.ansible.com/ansible/latest/modules/pause_module.html#pause-module
+
+Not used as frequently as other modules
+
+Stops the execution of a playbook until a key is pressed
+
+#vi pause.yaml
+--- # Example for Pause module
+- hosts: apacheweb
+  sudo: yes
+  user: ansible
+  connection: ssh
+  gather_facts: no
+  tasks:
+   - name: Install httpd
+     action: yum name=httpd state=installed
+   - name: Pausing
+     pause:
+       prompt: "Make sure the installation is complete..."
+       #seconds: 3
+   - name: Verify lynx installation
+     action: yum name=lynx state=present
+:wq!
+#ansible-playbook pause.yaml

@@ -1,0 +1,15 @@
+Copy Module
+https://docs.ansible.com/ansible/latest/modules/copy_module.html#copy-module
+
+#vi copy.yaml
+--- #copy module
+- hosts: sumanrh
+  sudo: yes
+  user: ansible
+  gather_facts: no
+  connection: ssh
+  tasks:
+  - name: Copying from files directory test files
+    action: copy src=files/test1.txt dest=/home/ansible/test3.txt mode=0755 owner=ansible group=ansible
+    #action: copy src=files/test1.txt dest=/home/ansible/test3.txt mode=0755 owner=ansible group=ansible backup=yes
+    backup option helps us to take a backup of existing file with same name

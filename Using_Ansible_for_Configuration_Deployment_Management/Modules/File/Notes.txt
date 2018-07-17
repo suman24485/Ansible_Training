@@ -1,0 +1,15 @@
+File Module
+
+https://docs.ansible.com/ansible/latest/modules/file_module.html#file-module
+
+Get the details of the mentioned files/directories
+ansible apacheweb -m file -a 'path=/etc/fstab'
+
+creating a new file/directory
+ansible apacheweb -s -m file -a 'path=/tmp/etc/ state=directory mode=0700 owner=root'
+
+Copy a file from one place to another
+ansible apacheweb -s -m copy -a 'src=/etc/fstab dest=/tmp/etc/fstab'
+
+Removing a file
+ansible apacheweb -s -m command -a 'rm -rf /tmp/etc removes=/tmp/etc'
