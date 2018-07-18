@@ -1,0 +1,13 @@
+# User MOdule
+https://docs.ansible.com/ansible/latest/modules/user_module.html#user-module
+
+#vi user.yaml
+--- #User Module example
+- hosts: sumanrh
+  user:ansible
+  sudo: yes
+  connection: ssh
+  tasks:
+    - name: Add the user testapache to the apache web client
+      user: name=testapache comment="Test Apache" group=wheel
+      #user: name=testapache state=absent remove=yes

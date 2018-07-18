@@ -1,0 +1,4 @@
+DNF Module
+https://docs.ansible.com/ansible/latest/modules/dnf_module.html#dnf-module
+Used for Installing packages specific to CentOS 7 and Redhat 7
+Not installed by default (minimal install)
