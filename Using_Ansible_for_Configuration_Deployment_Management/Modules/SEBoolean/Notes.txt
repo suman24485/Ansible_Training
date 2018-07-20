@@ -1,0 +1,17 @@
+SEBoolean Module
+https://docs.ansible.com/ansible/latest/modules/seboolean_module.html#seboolean-module
+#getsebool | grep httpd
+httpd_anon_write
+#sestatus
+
+#vi seboolean.yaml
+--- # seboolean module example
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Change the boolean for anonymus writes on the remote
+      seboolean: name=httpd_anon_write state=yes persistent=yes
+:wq!

@@ -1,0 +1,18 @@
+Apache2_Module Module
+
+To enable or disable a specific module in apache web server
+https://docs.ansible.com/ansible/latest/modules/apache2_module_module.html#apache2-module-module
+https://docs.ansible.com/ansible/latest/modules/apache2_mod_proxy_module.html#apache2-mod-proxy-module
+
+cd /etc/apache2/mods-enabled
+
+#vi apache2
+--- # apache2 module
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Disable alias module in apache2
+      apache2_module: state=absent name=alias

@@ -1,0 +1,18 @@
+Script Module
+https://docs.ansible.com/ansible/latest/modules/script_module.html#script-module
+
+#vi system_uptime.sh
+#!/bin/sh
+/usr/bin/uptime
+:wq!
+
+#vi script.yaml
+--- # SCRIPT MODULE EXAMPLE
+- hosts: sumanrh
+  sudo: yes
+  user: ansible
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Executing the uptime script
+      script: /home/ansible/system_uptime.sh

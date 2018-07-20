@@ -1,0 +1,18 @@
+Stat Module
+https://docs.ansible.com/ansible/latest/modules/stat_module.html#stat-module
+retrieves facts or information on file on lnx directory
+whether a file is a file or link or directory or doesn't exist
+
+#vi stat.yaml
+--- # Stat Module Example
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Does a file/ directory exists or not?
+      stat: path=/home/ansible/playbooksss
+        register: p
+    - debug: msg=" The Path exists and is a directory"
+        when: p.stat.isdir is defined and p.stat.isdir

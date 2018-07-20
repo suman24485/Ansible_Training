@@ -1,0 +1,38 @@
+SetFact Module
+
+https://docs.ansible.com/ansible/latest/modules/set_fact_module.html#set-fact-module
+https://docs.ansible.com/ansible/latest/modules/set_stats_module.html#set-stats-module
+
+Set a fact for particular host
+#vi setfact.yaml
+--- # SetFact Module
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  vars:
+    playbook_version: 0.1b
+  tasks:
+    - name: Local variable display
+      set_fact:
+        singlefact: SOMETHING
+    - debug: msg={{ playbook_version }}
+    - debug: msg={{ singlefact }}
+:wq!
+
+setfact.singlefact - recheck 
+#vi setfacttest.yaml
+--- # SetFact Module
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  vars:
+    playbook_version: 0.1b
+    new_var: setfacts.singlefact
+  tasks:
+    - name: Local variable display
+    - debug: msg={{ playbook_version }}
+    - debug: msg={{ new_var }}

@@ -1,0 +1,16 @@
+Shell Module
+executing already existing scripts on remote systems
+https://docs.ansible.com/ansible/latest/modules/shell_module.html#shell-module
+
+--- # SHELL MODULE EXAMPLE
+- hosts: sumanrh
+  sudo: yes
+  user: ansible
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Executing a rmote command - uptime
+      shell: /usr/bin/uptime >> uptime.log
+      args:
+        chdir: logs/
+        creates: uptime.log

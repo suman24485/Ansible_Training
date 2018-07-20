@@ -1,0 +1,14 @@
+Raw Module
+https://docs.ansible.com/ansible/latest/modules/raw_module.html#raw-module
+
+# vi raw.yaml
+--- # RAW MODULE EXAMPLE
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Execte uptime command
+      raw: uptime > uptime_log1 executable=/bin/sh
+:wq!

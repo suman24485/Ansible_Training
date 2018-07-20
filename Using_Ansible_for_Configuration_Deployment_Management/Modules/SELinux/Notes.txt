@@ -1,0 +1,22 @@
+SELinux Module
+to set the secure policies temporarily or permanently until the playbook is run
+https://docs.ansible.com/ansible/latest/modules/selinux_module.html#selinux-module
+https://docs.ansible.com/ansible/latest/modules/selinux_permissive_module.html#selinux-permissive-module
+
+On rmote
+#sestatus
+
+#cat /etc/selinux/config
+
+On controller
+#vi selinux.yaml
+--- # SELINUX MODULE EXAMPLE
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: changing the selinux configuration to permissive
+      selinux: state=disabled
+      #selinux: policy=targeted state=enforcing/permissive
