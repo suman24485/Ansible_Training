@@ -1,0 +1,18 @@
+Mount Module
+https://docs.ansible.com/ansible/latest/modules/mount_module.html#mount-module
+
+On Remote
+cd /mnt
+sudo mkdir data
+
+#vi mount.yaml
+--- # MOUNT MODULE EXAMPLE
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: mount the remte data partition
+      mount: name=/mnt/data src=/dev/xvdf fstype=ext3 opts=rw state=present
+:wq!

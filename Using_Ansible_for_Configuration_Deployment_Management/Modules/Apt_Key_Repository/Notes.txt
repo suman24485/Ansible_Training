@@ -1,0 +1,18 @@
+AptRepo/APtKey Module
+https://docs.ansible.com/ansible/latest/modules/apt_key_module.html#apt-key-module
+https://docs.ansible.com/ansible/latest/modules/apt_repository_module.html#apt-repository-module
+
+#vi aptrepo.yaml
+--- # APTREPO MODULE EXAMPLE
+- hosts: sumanub
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Install a dependency needed for apt_repo
+      apt: pkg=python-apt state=latest
+    - name: Add the repo key
+      apt_key: url=https://dl-ssl-google.com/linux/linux_shipping_key.pub state=present
+    - name: Add google repo for ubuntu
+      apt_repository: repo='http://dl.google.com/linux/deb/ stable main non-free' state=present

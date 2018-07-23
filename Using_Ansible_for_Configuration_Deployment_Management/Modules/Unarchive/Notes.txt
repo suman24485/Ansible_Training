@@ -1,0 +1,14 @@
+Unarchive module
+https://docs.ansible.com/ansible/latest/modules/unarchive_module.html#unarchive-module
+
+#vi unarchive.yaml
+--- #unarchive module example
+- hosts: sumanrh
+  user: ansible
+  sudo: no
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: copy and unarchive a file
+      unarchive: src=test.tar.gz dest=/home/ansible/unarchive
+      #unarchive: src=/home/ansible/local/test.tar.gz dest=/home/ansible/unarchive copy=no

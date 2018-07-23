@@ -1,0 +1,25 @@
+Jinja2 Template
+#vi test.conf
+<Connectivity>
+  ConnectionType SSH
+</Connectivity>
+<Account Information>
+  Username testuser
+  Password Password1
+</Account Information>
+<System Information>
+  Distributiontype Linux
+</System Information>
+:wq!
+#cp test.conf test.conf.j2
+#vi test.conf.j2
+<Connectivity>
+  ConnectionType {{ connectionType }}
+</Connectivity>
+<Account Information>
+  Username {{ userName }}
+  Password {{ passWord }}
+</Account Information>
+<System Information>
+  Distributiontype {{ ansible_os_family }}
+</System Information>

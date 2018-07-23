@@ -1,0 +1,14 @@
+MySQL_User Module
+https://docs.ansible.com/ansible/latest/modules/mysql_user_module.html#mysql-user-module
+
+#vi mysqluser.yaml
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+    - name: Install MySQL python support library
+      yum: pkg=MySQL-python state=latest
+    - name: Create a new user called BOB and give him all access
+      mysql_user: name=bob password=-password123 priv=*.*:ALL state=present login_user=root login_password=password123

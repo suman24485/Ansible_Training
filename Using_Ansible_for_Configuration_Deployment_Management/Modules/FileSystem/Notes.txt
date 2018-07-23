@@ -1,0 +1,26 @@
+FileSystem Module
+https://docs.ansible.com/ansible/latest/modules/filesystem_module.html#filesystem-module
+
+Partitioning
+$sudo fdisk -l
+sudo fdisk /dev/xvdf - creating a partition on remote
+
+#vi filesystem.yaml
+--- # FILESYSTEM MODULE EXAMPLE
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Formating the remote data partition
+      filesystem: fstype=ext3 dev=/dev/xvdf opts="-cc"
+:wq!
+
+On rmeote
+
+cd /mnt
+sudo mkdir tmp
+sudo mount /dev/xvdf tmp
+df -h
+sudo umount tmp

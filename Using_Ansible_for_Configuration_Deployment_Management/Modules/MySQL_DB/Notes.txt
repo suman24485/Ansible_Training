@@ -1,0 +1,29 @@
+MySQL_DB Module
+https://docs.ansible.com/ansible/latest/modules/mysql_db_module.html#mysql-db-module
+https://docs.ansible.com/ansible/latest/modules/mysql_db_module.html#mysql-db-module
+https://docs.ansible.com/ansible/latest/modules/mysql_variables_module.html#mysql-variables-module
+
+#vi myswl_db
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+    - name: Isntall the python mysql support libs
+      yum: pkg=MySQL-python state=latest
+    - name: Create a new test DB called MyNewDB
+      mysql_db:
+        name=MyNewDB
+        state=present
+        login_user=root
+        login_password=password123 #(can be masked using vault file)
+:wq!
+Creating a backup of existing database
+    - name: Create new test db called MyDBTest
+      mysql_db:
+        name=MyDBTest
+        state=dump
+        target=/var/lib/mydbtestbkp.sql
+        login_user=root
+        login_password=password123

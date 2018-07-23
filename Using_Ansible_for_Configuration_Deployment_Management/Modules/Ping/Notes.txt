@@ -1,0 +1,13 @@
+Ping Module
+https://docs.ansible.com/ansible/latest/modules/ping_module.html#ping-module
+
+#vi ping.yaml
+--- # ping module example
+- hosts: all
+  user: ansible
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: testing the ping module
+      ping:
+:wq!

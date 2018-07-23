@@ -1,0 +1,14 @@
+Git Module
+https://docs.ansible.com/ansible/latest/modules/git_module.html#git-module
+https://docs.ansible.com/ansible/latest/modules/git_config_module.html#git-config-module
+
+#vi git.yaml
+--- # GIT MODULE EXAMPLE
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Checking out a git repo on remote server
+      git: repo=ssh://ansible@sumanrh/home/ansible/testrepo dest=/home/ansible/gitrepo

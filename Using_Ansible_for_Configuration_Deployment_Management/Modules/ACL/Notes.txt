@@ -1,0 +1,22 @@
+ACL Module
+https://docs.ansible.com/ansible/latest/modules/acl_module.html#acl-module
+
+on Remote
+#setfacl
+#getfacl
+#sudo touch /etc/test.acl.txt
+
+#vi acl.yaml
+--- # ACL MODULE EXAMPLE
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Get ACL Information on /etc/test.acl.txt remote file
+      acl: name=/etc/test.acl.txt
+      #acl: name=/etc/test.acl.txt etype=user permissions="rw" state=present
+      register: aclinfo
+    - debug: msg={{ aclinfo }}
+:wq!

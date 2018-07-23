@@ -1,0 +1,14 @@
+HTPasswd Module
+https://docs.ansible.com/ansible/latest/modules/htpasswd_module.html#htpasswd-module
+
+#vi htpasswd.yaml
+--- #
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Adding a user to remote machine
+      htpasswd: path=/etc/apache2/.htpasswd name=test2 password=password owner=test2 group=test2 mode=0640
+:wq!

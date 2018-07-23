@@ -1,0 +1,15 @@
+Group Module
+https://docs.ansible.com/ansible/latest/modules/group_module.html#group-module
+https://docs.ansible.com/ansible/latest/modules/group_by_module.html#group-by-module
+
+#vi group.yaml
+--- #GROUP MODULE EXAMPLE
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Add a new group calld new group
+      group: name=newgroup state=present system=yes/no
+:wq!

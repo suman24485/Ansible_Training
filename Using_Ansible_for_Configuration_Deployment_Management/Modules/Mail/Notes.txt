@@ -1,0 +1,18 @@
+Mail Module
+https://docs.ansible.com/ansible/latest/modules/mail_module.html#mail-module
+
+#vi mail.yaml
+--- # MAIL MODULE EXAMPLE
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  gather_facts: yes
+  tasks:
+    - name: Send an email to test user indicating build completion
+      mail:
+        host='localhost'
+        port=25
+        to="test"
+        subject="Our host is finished deploying"
+        body="System called {{ ansible_hostname }} has been successfully setup"
