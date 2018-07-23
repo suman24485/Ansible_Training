@@ -1,0 +1,20 @@
+Roles - automation around the "include" directives
+
+Roles - Directory Structure
+#ansible all --list-hosts
+#cd playbooks
+#mkdir Roles
+#cd Roles
+#mkdir roles
+#cd roles
+#mkdir common
+#mkdir webservers
+#mkdir appservers
+#mkdir cachingservers
+#cd common
+#mkdir files templates tasks handlers vars defaults meta
+meta #metadata
+
+create the above directories under al the other directories
+
+if exists common.yaml, automatically add to the respective lists from the above directories
