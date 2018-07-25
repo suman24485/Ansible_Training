@@ -1,0 +1,31 @@
+Role Based Tasks
+#cd redhat
+#cd tasks
+#vi main.yaml
+--- #
+- name: Install Apache web server
+  yum: pkg=httpd state=latest
+  notify: Restart HTTPD
+:wq!
+
+#cd ../handlers
+#vi main.yaml
+- name: Restart HTTPD
+  service: name=httpd state=restarted
+:wq!
+
+#cd ../vars
+#vi main.yaml
+copyright_msg: Copyright2015
+:wq!
+
+#cd ../roles
+#vi redhat.yml
+--- # Master Playbook for Web Servers
+- hosts: sumanrh
+  user: ansible
+  sudo: yes
+  connection: ssh
+  roles:
+    - redhat
+:wq!

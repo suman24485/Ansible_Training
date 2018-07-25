@@ -1,0 +1,23 @@
+Role - Handlers
+
+#vi ../tasks/main.yaml
+- name: Install (RedHat/CentOS) Apache web server
+  yum: pkg={{ redhat_apache }} state=latest
+  when: "ansible_os_family == 'RedHat'"
+  notify: Restart HTTPD
+  ignore_errors: yes
+- name: Install (Debian/Ubuntu) Apache web server
+  apt: pkg={{ debian_apache }} state=latest
+  when: "ansible_os_family == 'Debian'"
+  notify: Restart APACHE2
+  ignore_errors: yes
+
+#vi ../handlers/main.yaml
+- name: Restart HTTPD
+  service: name=httpd state=restarted
+  when: "ansible_os_family == 'RedHat'"
+  ignore_errors: yes
+- name: Restart APACHE2
+  service: name=httpd state=restarted
+  when: "ansible_os_family == 'Debian'"
+  ignore_errors: yes

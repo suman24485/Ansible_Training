@@ -1,0 +1,14 @@
+Roles - Conditional Include Statements
+
+#cd Playbooks/Roles/roles/redhat
+#cat redhat.yml
+#mkdir redhat_webservers
+#mkdir debian_webservers
+#cp -rf ../redhat/* redhat_webservers
+#cp -rf ../redhat/* debian_webservers
+#cp redhat.yml redhatonly.yaml
+#cp redhat.yml debianonly.yml
+#vi webservers.yaml
+roles:
+  - { role: redhat_webservers, when: "ansible_os_family == 'RedHat'"}
+  - { role: debian_webservers, when: "ansible_os_family == 'Debian'"}

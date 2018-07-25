@@ -1,0 +1,18 @@
+Conditional_Execution
+#cd Playbooks/Roles/roles/redhat
+
+Installing httpd regardless of distribution type
+
+#vi tasks/main.yaml
+- name: Install (RedHat/CentOS) Apache web server
+  yum: pkg=httpd state=latest
+  when: "ansible_os_family == 'RedHat'"
+  notify: Restart HTTPD
+  ignore_errors: yes
+- name: Install (Debian/Ubuntu) Apache web server
+  yum: pkg=httpd state=latest
+  when: "ansible_os_family == 'Debian'"
+  notify: Restart HTTPD (Need to add conditions to handlers main.yaml)
+  ignore_errors: yes
+
+And No changes to redhat.yaml

@@ -1,0 +1,4 @@
+Role - Configuring Alternate Roles Paths
+ to change the path of the roles so that the playbook can be run from any location.
+ vi /etc/ansible/ansible.cfg
+ roles_path=/home/ansible/Playbooks/Roles/roles

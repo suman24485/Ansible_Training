@@ -1,4 +1,7 @@
-Roles - automation around the "include" directives
+Ansible 1.4 and above - Roles - automation around the "include" directives
+
+break into discrete plays so that could be included in control files
+
 
 Roles - Directory Structure
 #ansible all --list-hosts
@@ -17,4 +20,4 @@ meta #metadata
 
 create the above directories under al the other directories
 
-if exists common.yaml, automatically add to the respective lists from the above directories
+if exists main.yaml, automatically add to the respective lists from the above directories

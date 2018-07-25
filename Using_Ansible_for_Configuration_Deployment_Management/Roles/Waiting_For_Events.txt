@@ -1,0 +1,12 @@
+Roles - Waiting for Events
+#cd redhat_webservers
+#cd tasks
+#vi main.yml
+- name: Install (RedHat/CentOS) Apache web server
+  yum: pkg={{ redhat_apache }} state=latest
+  when: "ansible_os_family == 'RedHat'"
+- name: Wait for the service to start listening on port 80
+  wait_for:
+    port: 80
+    state: started
+    

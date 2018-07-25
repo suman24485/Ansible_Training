@@ -1,0 +1,18 @@
+Variable Substitution
+#cd roles
+#cd redhat/vars
+#vi main.yaml
+copyright_msg: CopyRight2015
+redhat_apache: httpd
+debian_apache: apache2
+:wq!
+
+#vi ../tasks/main.yaml
+- name: Install (RedHat/CentOS) Apache web server
+  yum: pkg={{ redhat_apache }} state=latest
+  when: "ansible_os_family == 'RedHat'"
+  ignore_errors: yes
+- name: Install (Debian/Ubuntu) Apache web server
+  apt: pkg={{ debian_apache }} state=latest
+  when: "ansible_os_family == 'Debian'"
+  ignore_errors: yes
