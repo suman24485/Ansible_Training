@@ -1,0 +1,31 @@
+Ansible CommandLine
+
+##Installing Packages
+ansible debian -u ansible -s -m apt -a "pkg=apache2 state=latest"
+ansible redhat -u ansible -s -m yum -a "pkg=httpd state=latest"
+
+##Services and Hosts
+ansible all -i hosts.ini -u ansible -s -m command -a "ls -al"
+
+##Commands and Shells
+ansible all -u ansible -m command -a "ls -al"
+ansible ubuntu -u ansible -s -m command -a "cat /etc/issue"
+ansible ubuntu -u ansible -s -m shell -a "cat /etc/issue"
+ansible ubuntu -u ansible -s -m raw -a "cat /etc/issue"
+
+##Managing Users
+ansible all -u ansible -s -m user -a "name=johnsmith uid=25001 shell=/bin/bash"
+ansible all -u ansible -s -m user -a "name=johnsmith state=absent remove=yes"
+
+##Create and Manage Cron Jobs
+ansible redhat -u ansible -s -m cron -a "name='crontest' minute='0' hours='12' job='ls -la /var > /root/var.log'"
+ansible redhat -u ansible -s -m cron -a "name='crontest' state=absent"
+
+##Running Arbitrary commands ( doesn't require a module )
+ansible all -u ansible -a "ls -la /etc/fstab"
+ansible all -u ansible -a "cat /etc/fstab"
+
+##Output Tree
+ansible redhat -s -m yum -a "pkg=lynx state=latest" -t install-results
+creates log file for each host
+cd install-results
