@@ -1,0 +1,40 @@
+##Outline
+#cd Playbooks
+#mkdir usecases
+#cd usecases
+
+#vi outline_webserver_playbook.txt
+- Build an apache web server
+- Deploy the webserver with ansible user
+- Ansible user needs sudo
+- Connection type ssh rather than paramiko
+- Gathering facts ON
+
+- Info Needed:
+  - apache web server package
+  - Distribution running on
+  - apache version
+  - need the web server directory customized
+  - what is the site name
+
+-What needs to be done
+ - install apache server on remote machines
+ - create web server directory
+ - web server dir has proper ownership
+ - Configuration of apache
+   - copy the http coonfig file
+   - set up the vhost directory
+   - add any ssl keys if needed
+   - add the vhost template for the default site
+ - copy the site code to new directory
+ - start the apache service
+ - add/enable any modules needed
+   - mysql/mariadb
+   - ssl
+   - mod/rewrite
+ - restart the apache serivce (or move the start to here)
+
+-Test
+  - using lynx or telnet
+    - wait for port 80 to be listening
+  - register output for the service status as JSON on the completion of the playbook

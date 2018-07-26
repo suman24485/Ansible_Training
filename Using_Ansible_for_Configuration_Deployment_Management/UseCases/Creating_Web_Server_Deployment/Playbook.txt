@@ -1,0 +1,37 @@
+Creating a web server deployment - Playbook First Pass
+
+#vi webserver.yaml
+---# Build an apache web server
+- hosts: apacheweb
+  user: ansible # Deploy the webserver with ansible user
+  sudo: yes # Ansible user needs sudo
+  connection: ssh # Connection type ssh rather than paramiko
+  gather_facts: yes # - Gathering facts ON
+  vars: #- Info Needed:
+    apache_pkg: httpd   #- apache web server package
+    distribution: redhat #  - Distribution running on
+    apache_version: 2.4 #   - apache version
+    apache_dir: /var/www/sample #   - need the web server directory customized
+    apache_fqdn:              #   - what is the site name
+  tasks: # -What needs to be done
+    - name: Install the web server package # - install apache server on remote machines
+      yum: pkg=httpd state=latest
+    - name: create the web server directory #  - create web server directory
+      file: path=/var/www/sample state=directory mode=644
+    - name: Copy  the apache config file to remote host # - copy the http config file
+      copy: src=files/httpd.conf.template dest=/etc/httpd/conf/httpd.conf owner=root group=root mode=644
+    # - Configuration of apache
+    - name: create the vhost.d directory on the remote host
+      file: path=/etc/httpd/vhost.d state=directory mode=755
+    - name: Copy and untar the source for the site # - copy the site code to new directory
+      unarchive: src=files/sitecode.tar.gz dest=/var/www/sample
+    - name: Copy the default vhost config file
+      copy: src=files/default.conf.template dest=/etc/httpd/vhost.d/default.conf owner=root group=root mode=644
+    - name: Start the web server #  - restart the apache serivce (or move the start to here)
+      service: name=httpd state=started
+  #-Test
+    - name: Test the web server #   - using lynx or telnet
+      shell: curl http://<servername>
+      register: default
+    - name: DisplayResult #   - register output for the service status as JSON on the completion of the playbook
+      debug: var=result

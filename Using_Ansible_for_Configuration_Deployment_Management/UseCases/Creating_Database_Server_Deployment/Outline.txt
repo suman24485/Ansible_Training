@@ -1,0 +1,28 @@
+Creating a Database Server Deployment
+
+#cd usecases
+#vi DBServer_Outline.txt
+- Installing and configuring a mariadb server (master)
+- Installation will be done with user ansible
+- installation needs to be done iwth sudo privileges
+- gathering facts need to be on
+
+- What do we need to know?
+  - the package name of the DB server
+  - the group/host of the master server
+  - the directory for installing  the DB
+  - the version of the db
+  - the distribution it is installed on
+
+- What needs to be done
+  - install the MAriaDB server and utilities
+  - root pwd install
+     - waitfor the db service to be started
+       - takes place manually after the mysql-secure-isntallation run
+  - install the mysql/mariadb config file(if needed)
+  - copy the mysql/mariadb database backup to the home directory
+  - import the databases
+  - add a cron job for nightly backups
+
+-Testing the db
+  - run a MYSQL Command and register the utput as JSON format to determine success of failure

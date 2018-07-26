@@ -1,0 +1,61 @@
+Creating a Database Server Deployment
+
+#cd usecases
+#vi DBServer_Outline.txt
+--- # Installing and configuring a mariadb server (master)
+- hosts: webserver
+  user: ansible # Installation will be done with user ansible
+  sudo: yes # installation needs to be done iwth sudo privileges
+  gather_facts: yes # gathering facts need to be on
+
+# - What do we need to know?
+  vars:
+    dbserver_pkg: mariadb-server
+    dbclient_pkg: mariadb
+    dbserver_fqdn: <servername>
+    dbinstalldir: /var/lib
+    dbinstancename: MyDBTest
+    dbdistribution: redhat
+    dbversion: 5.5.44
+
+# - What needs to be done
+  tasks:
+  - name: Install all the MariaDB Packages ( CLient and Server)
+    yum: pkg= {{ item }} state=latest
+    with_items:
+    - "{{ dbserver_pkg }}"
+    - "{{ dbclient_pkg }}"
+    notify:
+    - StartDBService
+    - RunSecureInstallPaause
+    - RestartDBService
+    - CopyBkupFile
+    - CreateRemoteDB
+    - DisplayCreationResults
+    - RestoreRemoteDB
+    - TestDBResults
+    - ShowDBResults
+  - name: Add a backup cron job to run everyday at midnight
+    cron: name="DBBackup" minute="0" hour="0" job="mysqldump -u root -ppassword123 --databases {{ dbinstancename }} >> dbbkup.sql"
+  handlers
+  - name: StartDBService
+    service: name={{ dbclient_pkg }} state=started
+  - name: RunSecureInstallPause
+  - pause: prompt=" Please run the mysql_secure_installation binary and then press enter for the playbook to continue"
+  - name: RestartDBService
+    service: name={{ dbclient_pkg }} state=restarted
+  - name: CopyBkupFile
+    copy= src=files/mysqlbckp.sql dest=/var/lib/mysqlbkp.sql owner=root group=root mode=755
+  - name: CreateRemoteDB
+    shell: mysqladmin -u root -ppassword123 create MyDBTest
+    register: result
+  - name: DisplayCreationResults
+    debug: var=result
+  - name: RestoreRemoteDB
+    shell: mysql -u root -ppassword123 {{ dbinstancename }} < {{ dbinstalldir }}/mysqlbkp.sql
+    register: result
+  - debug: var=result
+  - name: TestDBResults
+    shell: mysql -u root -ppassword123 -e 'SHOW DATABASES'
+    register: mysqlresult
+  - debug: var=mysqlresult

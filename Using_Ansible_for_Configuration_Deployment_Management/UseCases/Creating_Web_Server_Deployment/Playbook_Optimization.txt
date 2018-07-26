@@ -1,0 +1,46 @@
+Creating a web server deployment - Playbook Optimization
+#vi webserver.yaml
+---# Build an apache web server
+- hosts: apacheweb
+  user: ansible # Deploy the webserver with ansible user
+  sudo: yes # Ansible user needs sudo
+  connection: ssh # Connection type ssh rather than paramiko
+  gather_facts: yes # - Gathering facts ON
+  vars: #- Info Needed:
+    apache_pkg: httpd   #- apache web server package
+    #distribution: redhat #  - Distribution running on
+    distribution: "{{ ansible_os_family }}"
+    apache_version: 2.4 #   - apache version
+    apache_dir: /var/www/sample #   - need the web server directory customized
+    apache_fqdn: <servername>   #   - what is the site name
+  tasks: # -What needs to be done
+    - name: Install the web server package # - install apache server on remote machines
+      #yum: pkg=httpd state=latest
+      yum: pkg={{ apache_pkg }} state=latest
+    - name: create the web server directory #  - create web server directory
+      #file: path=/var/www/sample state=directory mode=644
+      file: path={{ apache_dir }} state=directory mode=644
+    - name: Copy  the apache config file to remote host # - copy the http config file
+      copy: src=files/httpd.conf.template dest=/etc/httpd/conf/httpd.conf owner=root group=root mode=644
+    # - Configuration of apache
+    - name: create the vhost.d directory on the remote host
+      file: path=/etc/httpd/vhost.d state=directory mode=755
+    - name: Copy and untar the source for the site # - copy the site code to new directory
+      unarchive: src=files/sitecode.tar.gz dest=/var/www/sample
+    - name: Copy the default vhost config file
+      copy: src=files/default.conf.template dest=/etc/httpd/vhost.d/default.conf owner=root group=root mode=644
+      notify:
+        - StartHttpd
+        - TestHttpd
+        - DisplayResult
+   handler:
+    #- name: Start the web server #  - restart the apache serivce (or move the start to here)
+     - name: StartHttpd
+       #service: name=httpd state=started
+       service: name={{ apache_pkg }} state=started
+    #- name: Test the web server #   - using lynx or telnet
+     - name: TestHttpd
+       shell: curl http://{{ apache_fqdn }}
+       register: result
+     - name: DisplayResult #   - register output for the service status as JSON on the completion of the playbook
+       debug: var=result

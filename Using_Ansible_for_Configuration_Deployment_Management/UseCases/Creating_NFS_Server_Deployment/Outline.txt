@@ -1,0 +1,28 @@
+Creating an NFS Server Deployment - Outline
+
+Complete creating database server deployment inorder to work on this task
+
+#vi Outline.txt
+- Installing and configuring NFS static content server fr web use
+- installation and configuration done with the ansible user
+- the ansible user needs to be sudo
+- gater
+
+What do we need to know
+ - distribution
+ - the NFS server and client package names
+ - path to shared file space
+
+what do we need to install
+ - install NFS server/client
+ - export the shared directory
+ - add out LA Lab network
+ - Config filesystem export for read/write oon know networks
+    - disable any unknow n/w for user connectivity
+ - start NFS service
+ - cron job backup the FS
+ - NFS Client installs?
+   - NFS client /etc/fstab config to mount the share on boot ?
+
+test
+ - Capture NFS server status as a JSON output and register the result
