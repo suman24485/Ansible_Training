@@ -1,0 +1,19 @@
+Advanced Topics
+
+Galaxy Introduction and Usage
+
+Ansible Galaxy : galaxy.ansible.com
+Large set of reusable roles
+#ansible-galaxy
+#ansible-galaxy -list
+
+Ansible 2.0
+
+
+
+Installation
+
+Modules
+- Find
+- Package
+- 
